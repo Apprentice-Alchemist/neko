@@ -1,5 +1,6 @@
 
 add_library(std.ndll MODULE
+	atomic.c
 	buffer.c
 	date.c
 	file.c
