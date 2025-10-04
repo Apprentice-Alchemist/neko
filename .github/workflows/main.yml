@@ -143,12 +143,18 @@ jobs:
   windows-build:
     name: windows
     strategy:
+      fail-fast: false
       matrix:
-        arch: [Win32, x64]
+        arch: [Win32, x64, ARM, ARM64]
         vstools: [vs2017, vs2022]
         include:
           - arch: x64
             name_suffix: 64
+          - arch: ARM
+            name_suffix: ARM
+            cmake_platform: ARM,version=10.0.19041.0
+          - arch: ARM64
+            name_suffix: ARM64
 
           - vstools: vs2017
             arch: Win32
@@ -160,6 +166,11 @@ jobs:
 
           - vstools: vs2022
             cmake_generator: Visual Studio 17 2022
+        exclude:
+          - arch: ARM
+            vstools: vs2017
+          - arch: ARM64
+            vstools: vs2017
 
     env:
       CMAKE_BUILD_TYPE: RelWithDebInfo
@@ -178,7 +189,7 @@ jobs:
         run: |
           cmake . -G "${{ matrix.cmake_generator }}" ${{ env.CMAKE_ARCH_FLAG }}
         env:
-          CMAKE_ARCH_FLAG: ${{ matrix.vstools == 'vs2022' && format('-A {0}', matrix.arch) || ' ' }}
+          CMAKE_ARCH_FLAG: ${{ matrix.vstools == 'vs2022' && format('-A {0}', matrix.cmake_platform || matrix.arch) || ' ' }}
 
       - name: Download dependencies
         run: |

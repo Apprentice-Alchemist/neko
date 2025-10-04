@@ -8,6 +8,8 @@ endif()
 
 project(Neko C)
 
+set(CMAKE_C_STANDARD 11)
+
 include(GNUInstallDirs)
 include(CheckCCompilerFlag)
 include(CheckIncludeFile)
